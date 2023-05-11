@@ -5,6 +5,11 @@ service AuthService{
     rpc req_DH_params(DHParamsRequest) returns (DHParamsResponse);
 }
 
+message CompleteNonces {
+    string nonce = 1;
+    string nonce_server = 2;
+}
+
 message PQRequest {
     uint64 message_id = 1;
     string nonce = 2;
@@ -12,21 +17,18 @@ message PQRequest {
 
 message PQResponse {
     uint64 message_id = 1;
-    string nonce = 2;
-    string nonce_server = 3;
-    uint64 p = 4;
-    uint64 g = 5;   
+    CompleteNonces nonces = 2;
+    uint64 p = 3;
+    uint64 g = 4;   
 }
 
 message DHParamsRequest {
     uint64 message_id = 1;
-    string nonce = 2;
-    string nonce_server = 3;
+    CompleteNonces nonces = 2;
 }
 
-message DHParamsResponse{
+message DHParamsResponse {
     uint64 message_id = 1;
-    string nonce = 2;
-    string nonce_server = 3;
-    uint64 b = 5;
+    CompleteNonces nonces = 2;
+    uint64 b = 3;
 }
