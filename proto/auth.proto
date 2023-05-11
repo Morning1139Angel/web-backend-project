@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+service AuthService{
+    rpc pq_req(PQRequest) returns (PQResponse);
+    rpc req_DH_params(DHParamsRequest) returns (DHParamsResponse);
+}
+
+message PQRequest {
+    uint64 message_id = 1;
+    string nonce = 2;
+}
+
+message PQResponse {
+    uint64 message_id = 1;
+    string nonce = 2;
+    string nonce_server = 3;
+    uint64 p = 4;
+    uint64 g = 5;   
+}
+
+message DHParamsRequest {
+    uint64 message_id = 1;
+    string nonce = 2;
+    string nonce_server = 3;
+}
+
+message DHParamsResponse{
+    uint64 message_id = 1;
+    string nonce = 2;
+    string nonce_server = 3;
+    uint64 b = 5;
+}
