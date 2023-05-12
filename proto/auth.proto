@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "./grpc";
+
 service AuthService{
     rpc pq_req(PQRequest) returns (PQResponse);
     rpc req_DH_params(DHParamsRequest) returns (DHParamsResponse);
