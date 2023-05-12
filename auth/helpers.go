@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
+	"os"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -27,6 +28,9 @@ func getStringSha1(str string) string {
 }
 
 func initRedicClient() *redis.Client {
+	var redisHost = os.Getenv("REDIS_HOST")
+	var redisPort = os.Getenv("REDIS_PORT")
+	var redisPassword = os.Getenv("REDIS_PASSWORD")
 	return redis.NewClient(&redis.Options{
 		Addr:     redisHost + ":" + redisPort,
 		Password: redisPassword,

@@ -3,15 +3,10 @@ package main
 import (
 	"log"
 	"net"
-	"os"
 
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
 	"google.golang.org/grpc"
 )
-
-var redisHost = os.Getenv("REDIS_HOST")
-var redisPort = os.Getenv("REDIS_PORT")
-var redisPassword = os.Getenv("REDIS_PASSWORD")
 
 func main() {
 	// Create a new gRPC server
