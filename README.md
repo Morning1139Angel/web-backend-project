@@ -33,3 +33,11 @@ curl --location 'http://localhost:80?sss=deeffer&sdwefsev=aaa&name=amir' \
 --header 'Content-Type: text/plain' \
 --data 'wdwef hellllllllo!!!'
 ```
+
+##GRPC
+the folowing commands were used to generate the grpc boilerplate code 
+```bash
+protoc --go_out=./auth --go-grpc_out=./auth proto/auth.proto
+protoc --go_out=./gateway --go-grpc_out=./gateway proto/auth.proto
+```
+and then use ```go tidy``` in both ./gateway and ./auth to get the dependencies
