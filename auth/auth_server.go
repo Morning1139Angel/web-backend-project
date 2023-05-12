@@ -4,10 +4,12 @@ import (
 	"context"
 
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
+	"github.com/go-redis/redis/v8"
 )
 
 type authServer struct {
 	pb.UnimplementedAuthServiceServer
+	rdb *redis.Client
 }
 
 func (s *authServer) PqReq(
