@@ -17,9 +17,8 @@ func (s *authServer) PqReq(
 	in *pb.PQRequest,
 ) (*pb.PQResponse, error) {
 
-	// function body
 	var messageId uint64 = 0
-	nonceServer := ""
+	nonceServer := generateNonce(20)
 
 	completeNonces := &pb.CompleteNonces{Nonce: in.Nonce, NonceServer: nonceServer}
 	return &pb.PQResponse{MessageId: messageId, Nonces: completeNonces}, nil
@@ -44,17 +43,17 @@ service AuthService{
 }
 
 message CompleteNonces {
-    string nonce = 1;
+	string nonce = 1;
     string nonce_server = 2;
 }
 
 message PQRequest {
-    uint64 message_id = 1;
+	uint64 message_id = 1;
     string nonce = 2;
 }
 
 message PQResponse {
-    uint64 message_id = 1;
+	uint64 message_id = 1;
     CompleteNonces nonces = 2;
     uint64 p = 3;
     uint64 g = 4;
