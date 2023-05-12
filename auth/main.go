@@ -6,7 +6,6 @@ import (
 	"os"
 
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
-	"github.com/go-redis/redis/v8"
 	"google.golang.org/grpc"
 )
 
@@ -35,12 +34,4 @@ func main() {
 	if err := server.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
-}
-
-func initRedicClient() *redis.Client {
-	return redis.NewClient(&redis.Options{
-		Addr:     redisHost + ":" + redisPort,
-		Password: redisPassword,
-		DB:       0, // use default DB
-	})
 }
