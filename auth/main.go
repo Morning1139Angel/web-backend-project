@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net"
 
@@ -16,7 +17,7 @@ func main() {
 	rdb := initRedicClient()
 
 	// Register implementation of the service
-	authService := &authServer{rdb: rdb}
+	authService := &authServer{rdb: rdb, ctx: context.Background()}
 	pb.RegisterAuthServiceServer(server, authService)
 
 	// Create a TCP listener

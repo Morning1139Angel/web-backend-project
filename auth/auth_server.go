@@ -2,14 +2,24 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"log"
+	"time"
 
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
 	"github.com/go-redis/redis/v8"
 )
 
+type pqData struct {
+	MessageId uint64
+	P         uint64
+	G         uint64
+}
+
 type authServer struct {
 	pb.UnimplementedAuthServiceServer
 	rdb *redis.Client
+	ctx context.Context
 }
 
 func (s *authServer) PqReq(
@@ -20,8 +30,22 @@ func (s *authServer) PqReq(
 	var messageId uint64 = 0
 	nonceServer := generateNonce(20)
 
+	p, g := generatePandG()
+
+	pqData := pqData{in.MessageId, p, g}
+	s.storePQdata(pqData, in.Nonce, nonceServer, 20*time.Minute)
+
 	completeNonces := &pb.CompleteNonces{Nonce: in.Nonce, NonceServer: nonceServer}
 	return &pb.PQResponse{MessageId: messageId, Nonces: completeNonces}, nil
+}
+
+func (s *authServer) storePQdata(pqData pqData, nonce, nonceServer string, exp time.Duration) {
+	encodingData, err := json.Marshal(pqData)
+	if err != nil {
+		log.Fatalf("Failed to marshal data: %v", err)
+	}
+	key := getStringSha1(nonce + nonceServer)
+	s.rdb.SetEX(s.ctx, key, encodingData, exp)
 }
 
 func (s *authServer) Req_DHParams(
@@ -35,39 +59,3 @@ func (s *authServer) Req_DHParams(
 
 	return &pb.DHParamsResponse{MessageId: messageId, Nonces: in.Nonces, B: b}, nil
 }
-
-/*
-service AuthService{
-    rpc pq_req(PQRequest) returns (PQResponse);
-    rpc req_DH_params(DHParamsRequest) returns (DHParamsResponse);
-}
-
-message CompleteNonces {
-	string nonce = 1;
-    string nonce_server = 2;
-}
-
-message PQRequest {
-	uint64 message_id = 1;
-    string nonce = 2;
-}
-
-message PQResponse {
-	uint64 message_id = 1;
-    CompleteNonces nonces = 2;
-    uint64 p = 3;
-    uint64 g = 4;
-}
-
-message DHParamsRequest {
-    uint64 message_id = 1;
-    CompleteNonces nonces = 2;
-}
-
-message DHParamsResponse {
-    uint64 message_id = 1;
-    CompleteNonces nonces = 2;
-    uint64 b = 3;
-}
-
-*/

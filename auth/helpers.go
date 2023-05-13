@@ -37,3 +37,7 @@ func initRedicClient() *redis.Client {
 		DB:       0, // use default DB
 	})
 }
+
+func generatePandG() (uint64, uint64) {
+	return 0, 0
+}
