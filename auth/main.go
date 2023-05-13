@@ -5,7 +5,9 @@ import (
 	"log"
 	"net"
 
+	authServer "github.com/Morning1139Angel/web-hw1/auth/authServer"
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
+	utils "github.com/Morning1139Angel/web-hw1/auth/utils"
 	"google.golang.org/grpc"
 )
 
@@ -14,10 +16,10 @@ func main() {
 	server := grpc.NewServer()
 
 	//initialize redis client
-	rdb := initRedicClient()
+	rdb := utils.InitRedicClient()
 
 	// Register implementation of the service
-	authService := NewAuthServer(rdb, context.Background())
+	authService := authServer.NewAuthServer(rdb, context.Background())
 	pb.RegisterAuthServiceServer(server, authService)
 
 	// Create a TCP listener

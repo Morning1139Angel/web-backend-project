@@ -1,4 +1,4 @@
-package main
+package authserver
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"time"
 
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
+	utils "github.com/Morning1139Angel/web-hw1/auth/utils"
 	"github.com/go-redis/redis/v8"
 )
 
@@ -32,9 +33,9 @@ func (s *authServer) PqReq(
 ) (*pb.PQResponse, error) {
 
 	var messageId uint64 = 0
-	nonceServer := generateNonce(20)
+	nonceServer := utils.GenerateNonce(20)
 
-	p, g := generatePandG()
+	p, g := utils.GeneratePandG()
 
 	pqData := pqData{in.MessageId, p, g}
 	s.storePQdata(pqData, in.Nonce, nonceServer, 20*time.Minute)
@@ -48,7 +49,7 @@ func (s *authServer) storePQdata(pqData pqData, nonce, nonceServer string, exp t
 	if err != nil {
 		log.Fatalf("Failed to marshal data: %v", err)
 	}
-	key := getStringSha1(nonce + nonceServer)
+	key := utils.GetStringSha1(nonce + nonceServer)
 	s.rdb.SetEX(s.ctx, key, encodingData, exp)
 }
 

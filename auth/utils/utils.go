@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"crypto/rand"
@@ -10,7 +10,7 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-func generateNonce(len int) string {
+func GenerateNonce(len int) string {
 	nonceByte := make([]byte, 16)
 	if _, err := rand.Read(nonceByte); err != nil {
 		panic(err)
@@ -21,13 +21,13 @@ func generateNonce(len int) string {
 	return nonceStr
 }
 
-func getStringSha1(str string) string {
+func GetStringSha1(str string) string {
 	hashBytes := sha1.Sum([]byte(str))
 	hashString := hex.EncodeToString(hashBytes[:])
 	return hashString
 }
 
-func initRedicClient() *redis.Client {
+func InitRedicClient() *redis.Client {
 	var redisHost = os.Getenv("REDIS_HOST")
 	var redisPort = os.Getenv("REDIS_PORT")
 	var redisPassword = os.Getenv("REDIS_PASSWORD")
@@ -38,6 +38,6 @@ func initRedicClient() *redis.Client {
 	})
 }
 
-func generatePandG() (uint64, uint64) {
+func GeneratePandG() (uint64, uint64) {
 	return 0, 0
 }
