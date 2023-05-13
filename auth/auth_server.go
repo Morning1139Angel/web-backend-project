@@ -22,6 +22,10 @@ type authServer struct {
 	ctx context.Context
 }
 
+func NewAuthServer(rdb *redis.Client, ctx context.Context) *authServer {
+	return &authServer{rdb: rdb, ctx: ctx}
+}
+
 func (s *authServer) PqReq(
 	ctx context.Context,
 	in *pb.PQRequest,

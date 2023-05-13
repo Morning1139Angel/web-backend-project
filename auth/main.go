@@ -17,7 +17,7 @@ func main() {
 	rdb := initRedicClient()
 
 	// Register implementation of the service
-	authService := &authServer{rdb: rdb, ctx: context.Background()}
+	authService := NewAuthServer(rdb, context.Background())
 	pb.RegisterAuthServiceServer(server, authService)
 
 	// Create a TCP listener
