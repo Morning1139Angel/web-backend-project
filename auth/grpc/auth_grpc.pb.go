@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AuthServiceClient interface {
 	PqReq(ctx context.Context, in *PQRequest, opts ...grpc.CallOption) (*PQResponse, error)
 	Req_DHParams(ctx context.Context, in *DHParamsRequest, opts ...grpc.CallOption) (*DHParamsResponse, error)
+	CheckAuthentication(ctx context.Context, in *CheckAuthRequest, opts ...grpc.CallOption) (*CheckAuthResponse, error)
 }
 
 type authServiceClient struct {
@@ -52,12 +53,22 @@ func (c *authServiceClient) Req_DHParams(ctx context.Context, in *DHParamsReques
 	return out, nil
 }
 
+func (c *authServiceClient) CheckAuthentication(ctx context.Context, in *CheckAuthRequest, opts ...grpc.CallOption) (*CheckAuthResponse, error) {
+	out := new(CheckAuthResponse)
+	err := c.cc.Invoke(ctx, "/AuthService/check_authentication", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
 	PqReq(context.Context, *PQRequest) (*PQResponse, error)
 	Req_DHParams(context.Context, *DHParamsRequest) (*DHParamsResponse, error)
+	CheckAuthentication(context.Context, *CheckAuthRequest) (*CheckAuthResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedAuthServiceServer) PqReq(context.Context, *PQRequest) (*PQRes
 }
 func (UnimplementedAuthServiceServer) Req_DHParams(context.Context, *DHParamsRequest) (*DHParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Req_DHParams not implemented")
+}
+func (UnimplementedAuthServiceServer) CheckAuthentication(context.Context, *CheckAuthRequest) (*CheckAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckAuthentication not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -120,6 +134,24 @@ func _AuthService_Req_DHParams_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_CheckAuthentication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckAuthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CheckAuthentication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/AuthService/check_authentication",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CheckAuthentication(ctx, req.(*CheckAuthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "req_DH_params",
 			Handler:    _AuthService_Req_DHParams_Handler,
+		},
+		{
+			MethodName: "check_authentication",
+			Handler:    _AuthService_CheckAuthentication_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
