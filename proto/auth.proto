@@ -5,6 +5,7 @@ option go_package = "./grpc";
 service AuthService{
     rpc pq_req(PQRequest) returns (PQResponse);
     rpc req_DH_params(DHParamsRequest) returns (DHParamsResponse);
+    rpc check_authentication(checkAuthRequest) returns (checkAuthResponse);
 }
 
 message CompleteNonces {
@@ -27,10 +28,20 @@ message PQResponse {
 message DHParamsRequest {
     uint64 message_id = 1;
     CompleteNonces nonces = 2;
+    uint64 A = 3;
 }
 
 message DHParamsResponse {
     uint64 message_id = 1;
     CompleteNonces nonces = 2;
-    uint64 b = 3;
+    uint64 B = 3;
+}
+
+message checkAuthRequest {
+    CompleteNonces nonces = 1;
+    uint64 auth_key = 2;
+}
+
+message checkAuthResponse {
+    bool is_authenticated = 1;
 }
