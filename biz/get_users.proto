@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package get_users;
+
+option go_package = "myPkgName/";
+
+service GetUsersService {
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {}
+  rpc GetUserWithInject (GetUserWithInjectRequest) returns (GetUserResponse) {}
+}
+
+message GetUserRequest {
+  uint64 user_id = 1;
+  string auth_key = 2;
+  string message_id = 3;
+}
+
+message GetUserWithInjectRequest {
+  string user_id = 1;
+  string auth_key = 2;
+  string message_id = 3;
+}
+
+
+message GetUserResponse {
+  repeated User users = 1;
+  string message_id = 2;
+}
+
+message User {
+      int64 id = 1;
+      string name = 2;
+      string family = 3;
+      uint32 age = 4;
+      string sex = 5;
+}
