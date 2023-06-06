@@ -16,7 +16,7 @@ docker network connect project-network gateway-server --alias gateway-server
 ## Nginx inital setup 
 start the Nginx container and connect it to the network created
 ```bash
-docker run --name nginx --network=project-network -p 80:80 -v `pwd`/default.conf:/etc/nginx/conf.d/default.conf -d nginx
+docker run --name nginx --network=project-network -p 80:80 -v `pwd`/config/default.conf:/etc/nginx/conf.d/default.conf -d nginx
 ```
 ##Testing
 To see the logs of the server u can use the following command 
@@ -46,7 +46,7 @@ and then use ```go tidy``` in both ./gateway and ./auth to get the dependencies
 run the folowing command for running redis and the redis monitor ... the redis monitor will be on port 8001 of local host
 the redis password is "SuperSecretSecureStrongPass"
 ```bash
-docker run -d --rm --name redis -v ${PWD}/config:/etc/redis/ redis:6.0-alpine redis-server /etc/redis/redis.conf
+docker run -d --rm --name redis -v `pwd`/config:/etc/redis/ redis:6.0-alpine redis-server /etc/redis/redis.conf
 docker network connect project-network redis --alias redis
 docker run -p 8001:8001 -d --rm --network=project-network redislabs/redisinsight:latest
 ```
