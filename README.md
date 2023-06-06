@@ -50,3 +50,15 @@ docker run -d --rm --name redis -v `pwd`/config:/etc/redis/ redis:6.0-alpine red
 docker network connect project-network redis --alias redis
 docker run -p 8001:8001 -d --rm --network=project-network redislabs/redisinsight:latest
 ```
+u can also use the redis CLI to view the expiration time... run this command on a new terminal first:
+```bash
+docker exec -it redis redis-cli -a "SuperSecretSecureStrongPass"
+```
+and then u can use ```TTL <key-name>``` inside the cli to see the expiration time
+
+##AUTH server
+for the auth server run the following commands:
+```bash
+docker build -t auth-server ./auth/
+docker run --network=project-network -p 9000:9000  -d --name auth-server auth-server
+```
