@@ -14,6 +14,7 @@ func (s *authServer) PqReq(
 	in *pb.PQRequest,
 ) (*pb.PQResponse, error) {
 
+	//TODO: add checks for required fields and their length
 	messageId, _ := utils.GenerateRandomOddNumber()
 	nonceServer := utils.GenerateNonce(20)
 	clientNonce := in.Nonce
