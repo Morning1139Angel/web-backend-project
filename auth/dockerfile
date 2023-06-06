@@ -1,15 +1,21 @@
-FROM golang:1.16-alpine
+FROM golang:1.20-alpine
 
 # Set the working directory
 WORKDIR /app
 
+# Set redis env vars
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=SuperSecretSecureStrongPass
+
 # Copy the code into the container
 COPY . .
 
+# Download the dependancies 
+RUN go mod tidy  
+
 # Build the application
 RUN go build -o myapp
-
-
 
 # Run the application
 CMD ["./myapp"]
