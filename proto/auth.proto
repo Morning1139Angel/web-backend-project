@@ -21,25 +21,25 @@ message PQRequest {
 message PQResponse {
     uint64 message_id = 1;
     CompleteNonces nonces = 2;
-    uint64 p = 3;
-    uint64 g = 4;   
+    string p = 3;
+    string g = 4;   
 }
 
 message DHParamsRequest {
     uint64 message_id = 1;
     CompleteNonces nonces = 2;
-    uint64 A = 3;
+    string A = 3;
 }
 
 message DHParamsResponse {
     uint64 message_id = 1;
     CompleteNonces nonces = 2;
-    uint64 B = 3;
+    string B = 3;
 }
 
 message checkAuthRequest {
     CompleteNonces nonces = 1;
-    uint64 auth_key = 2;
+    string auth_key = 2;
 }
 
 message checkAuthResponse {
