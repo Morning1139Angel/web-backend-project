@@ -16,7 +16,3 @@ type authServer struct {
 func NewAuthServer(rdb *redis.Client, ctx context.Context) *authServer {
 	return &authServer{rdb: rdb, ctx: ctx}
 }
-
-func (s *authServer) readFromRedis(key string) *redis.StringCmd {
-	return s.rdb.Get(s.ctx, key)
-}
