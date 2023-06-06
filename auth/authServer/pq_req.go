@@ -2,42 +2,29 @@ package authserver
 
 import (
 	"context"
-	"encoding/json"
-	"log"
+	"strconv"
 	"time"
 
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
 	utils "github.com/Morning1139Angel/web-hw1/auth/utils"
 )
 
-type pqData struct {
-	MessageId uint64
-	P         uint64
-	G         uint64
-}
-
 func (s *authServer) PqReq(
 	ctx context.Context,
 	in *pb.PQRequest,
 ) (*pb.PQResponse, error) {
 
-	var messageId uint64 = 0
+	messageId, _ := utils.GenerateRandomOddNumber()
 	nonceServer := utils.GenerateNonce(20)
+	clientNonce := in.Nonce
 
-	p, g := utils.GeneratePandG()
-
-	pqData := pqData{in.MessageId, p, g}
-	s.storePQdata(pqData, in.Nonce, nonceServer, 20*time.Minute)
+	key := utils.StorageKeyFromNonces(clientNonce, nonceServer)
+	s.rdb.SetEX(s.ctx, key, strconv.FormatUint(in.MessageId, 10), 20*time.Minute)
 
 	completeNonces := &pb.CompleteNonces{Nonce: in.Nonce, NonceServer: nonceServer}
-	return &pb.PQResponse{MessageId: messageId, Nonces: completeNonces}, nil
-}
-
-func (s *authServer) storePQdata(pqData pqData, nonce, nonceServer string, exp time.Duration) {
-	encodingData, err := json.Marshal(pqData)
-	if err != nil {
-		log.Fatalf("Failed to marshal data: %v", err)
-	}
-	key := utils.GetStringSha1(nonce + nonceServer)
-	s.rdb.SetEX(s.ctx, key, encodingData, exp)
+	return &pb.PQResponse{
+		MessageId: messageId,
+		Nonces:    completeNonces,
+		P:         "115792089237316195423570985008687907853269984665640564039457584007913129639747",
+		G:         "2"}, nil
 }

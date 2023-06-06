@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
+	"math/big"
 	"os"
 
 	"github.com/go-redis/redis/v8"
@@ -38,6 +39,22 @@ func InitRedicClient() *redis.Client {
 	})
 }
 
-func GeneratePandG() (uint64, uint64) {
-	return 0, 0
+func GenerateRandomOddNumber() (uint64, error) {
+	for {
+		// Generate a random 64-bit number
+		randomNum, err := rand.Int(rand.Reader, new(big.Int).SetBit(new(big.Int), 64, 1))
+		if err != nil {
+			return 0, err
+		}
+
+		// Check if the number is odd
+		if randomNum.Bit(0) == 1 {
+			return randomNum.Uint64(), nil
+		}
+	}
+}
+
+func StorageKeyFromNonces(clientNonce string, nonceServer string) string {
+	key := GetStringSha1(clientNonce + nonceServer)
+	return key
 }
