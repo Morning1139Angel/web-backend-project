@@ -24,6 +24,7 @@ func (s *authServer) PqReq(
 	messageId, _ := utils.GenerateRandomOddNumber()
 	nonceServer := utils.GenerateNonce(20)
 	clientNonce := in.Nonce
+	p, g := utils.GetPandG()
 
 	key := utils.StorageKeyFromNonces(clientNonce, nonceServer)
 	s.rdb.SetEX(s.ctx, key, strconv.FormatUint(in.MessageId, 10), 20*time.Minute)
@@ -32,8 +33,8 @@ func (s *authServer) PqReq(
 	return &pb.PQResponse{
 		MessageId: messageId,
 		Nonces:    completeNonces,
-		P:         "115792089237316195423570985008687907853269984665640564039457584007913129639747",
-		G:         "2"}, nil
+		P:         p,
+		G:         g}, nil
 }
 
 func checkPQFields(in *pb.PQRequest) (bool, error) {

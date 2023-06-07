@@ -58,3 +58,7 @@ func StorageKeyFromNonces(clientNonce string, nonceServer string) string {
 	key := GetStringSha1(clientNonce + nonceServer)
 	return key
 }
+
+func GetPandG() (string, string) {
+	return "115792089237316195423570985008687907853269984665640564039457584007913129639747", "2"
+}
