@@ -61,7 +61,7 @@ func StorageKeyFromNonces(clientNonce string, nonceServer string) string {
 }
 
 func GetPandGStrings() (string, string) {
-	return "115792089237316195423570985008687907853269984665640564039457584007913129639747", "2"
+	return "23", "5"
 }
 
 func parseBigIntFromString(str string) (*big.Int, error) {
