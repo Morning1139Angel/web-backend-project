@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example_password
+      POSTGRES_DB: example_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./default.conf:/etc/nginx/default.conf
+    depends_on:
+      - gateway
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  redis:
+    image: redis:latest
+
+  req_pq:
+    build:
+      context: .
+      dockerfile: auth/req_pq/Dockerfile
+
+  req_DH_params:
+    build:
+      context: .
+      dockerfile: auth/req_DH_params/Dockerfile
+
+volumes:
+  postgres-data:
