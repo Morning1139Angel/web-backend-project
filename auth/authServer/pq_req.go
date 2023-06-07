@@ -24,7 +24,7 @@ func (s *authServer) PqReq(
 	messageId, _ := utils.GenerateRandomOddNumber()
 	nonceServer := utils.GenerateNonce(20)
 	clientNonce := in.Nonce
-	p, g := utils.GetPandG()
+	p, g := utils.GetPandGStrings()
 
 	key := utils.StorageKeyFromNonces(clientNonce, nonceServer)
 	s.rdb.SetEX(s.ctx, key, strconv.FormatUint(in.MessageId, 10), 20*time.Minute)

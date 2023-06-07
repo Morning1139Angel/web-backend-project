@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 	"os"
 
@@ -59,6 +60,31 @@ func StorageKeyFromNonces(clientNonce string, nonceServer string) string {
 	return key
 }
 
-func GetPandG() (string, string) {
+func GetPandGStrings() (string, string) {
 	return "115792089237316195423570985008687907853269984665640564039457584007913129639747", "2"
+}
+
+func parseBigIntFromString(str string) (*big.Int, error) {
+	bigInt := new(big.Int)
+	_, success := bigInt.SetString(str, 10)
+	if !success {
+		return nil, fmt.Errorf("failed to parse string into big.Int: %s", str)
+	}
+	return bigInt, nil
+}
+
+func GetPandGBigInts() (*big.Int, *big.Int, error) {
+	pStr, gStr := GetPandGStrings()
+
+	pBigInt, err := parseBigIntFromString(pStr)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	gBigInt, err := parseBigIntFromString(gStr)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return pBigInt, gBigInt, nil
 }
