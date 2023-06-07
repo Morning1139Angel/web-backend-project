@@ -7,6 +7,8 @@ import (
 
 	pb "github.com/Morning1139Angel/web-hw1/auth/grpc"
 	utils "github.com/Morning1139Angel/web-hw1/auth/utils"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (s *authServer) PqReq(
@@ -14,7 +16,11 @@ func (s *authServer) PqReq(
 	in *pb.PQRequest,
 ) (*pb.PQResponse, error) {
 
-	//TODO: add checks for required fields and their length
+	fieldsHasIssues, err := checkPQFields(in)
+	if fieldsHasIssues {
+		return nil, err
+	}
+
 	messageId, _ := utils.GenerateRandomOddNumber()
 	nonceServer := utils.GenerateNonce(20)
 	clientNonce := in.Nonce
@@ -28,4 +34,20 @@ func (s *authServer) PqReq(
 		Nonces:    completeNonces,
 		P:         "115792089237316195423570985008687907853269984665640564039457584007913129639747",
 		G:         "2"}, nil
+}
+
+func checkPQFields(in *pb.PQRequest) (bool, error) {
+	// Check for missing required fields
+	if in.Nonce == "" || in.MessageId == 0 {
+		return true, status.Errorf(codes.InvalidArgument, "Missing required field(s)")
+	}
+	// Validate nonce length
+	if len(in.Nonce) != 20 {
+		return true, status.Errorf(codes.InvalidArgument, "Invalid nonce length")
+	}
+	// Validate messageId as an odd number
+	if in.MessageId%2 != 1 {
+		return true, status.Errorf(codes.InvalidArgument, "messageId must be an odd number")
+	}
+	return false, nil
 }
