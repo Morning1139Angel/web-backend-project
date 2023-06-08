@@ -24,6 +24,17 @@ type PQRequest struct {
 	Nonce     string `json:"nonce" binding:"required,len=20"`
 }
 
+type DHRequest struct {
+	A         string         `json:"A" binding:"required,number"`
+	MessageId uint64         `json:"messageId" binding:"required"`
+	Nonces    CompleteNonces `json:"nonces" binding:"required"`
+}
+
+type CompleteNonces struct {
+	Nonce        string `json:"nonce" binding:"required,len=20"`
+	Nonce_server string `json:"nonceServer" binding:"required,len=20"`
+}
+
 func main() {
 	// Create a gRPC connection to the server
 	targetPath := authServerHost + ":" + authServerPort
@@ -38,7 +49,8 @@ func main() {
 
 	//start the gin server
 	engine := gin.New()
-	engine.POST("/auth/pq", PQhandler) //TODO: add DH handler
+	engine.POST("/auth/pq", PQhandler)
+	engine.POST("/auth/dh", DHhandler)
 	engine.Run(":8080")
 }
 
@@ -81,4 +93,39 @@ func checkMessageIdOddness(messageId uint64) error {
 		return status.Errorf(codes.InvalidArgument, "messageId must be an odd number")
 	}
 	return nil
+}
+
+func DHhandler(c *gin.Context) {
+	//do field checks on the request body
+	body, err := fieldCheckDHBody(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	//send request to server
+	completeNonces := &pb.CompleteNonces{Nonce: body.Nonces.Nonce, NonceServer: body.Nonces.Nonce_server}
+	request := &pb.DHParamsRequest{MessageId: body.MessageId, Nonces: completeNonces, A: body.A}
+	dhResponse, err := authClient.Req_DHParams(context.Background(), request)
+
+	//send the gRPC response back to the client
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, dhResponse)
+
+}
+
+func fieldCheckDHBody(c *gin.Context) (DHRequest, error) {
+	body := DHRequest{}
+	//do the checks specified by the struct tags of PQRequest
+	if err := c.ShouldBindJSON(&body); err != nil {
+		return DHRequest{}, err
+	}
+
+	//check message Id being odd
+	if err := checkMessageIdOddness(body.MessageId); err != nil {
+		return DHRequest{}, err
+	}
+	return body, nil
 }
