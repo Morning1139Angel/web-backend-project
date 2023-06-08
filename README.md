@@ -5,13 +5,6 @@ create the network and build the images required
 docker network create --driver bridge project-network
 docker build -t gateway-server ./gateway
 ```
-## Nginx inital setup 
-run these commands on the root project directory
-```bash
-docker run --name nginx -p 80:80 -v `pwd`/default.conf:/etc/nginx/conf.d/default.conf -d nginx
-docker network connect project-network docker-nginx --alias nginx
-```
-
 ## Golang gateway server
 the golang server will log the incoming requests.
 to see the logs of the server u can use the docker command :
@@ -66,5 +59,5 @@ and then u can use ```TTL <key-name>``` inside the cli to see the expiration tim
 for the auth server run the following commands:
 ```bash
 docker build -t auth-server ./auth/
-docker run --network=project-network -p 9000:9000  -d --name auth-server auth-server
+docker run --network=project-network --network-alias=auth-server  -p 9000:9000 -d --name auth-server auth-server
 ```
