@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"log"
-	"net/http"
 	"os"
 
 	pb "github.com/Morning1139Angel/web-hw1/gateway/grpc"
@@ -18,22 +16,6 @@ import (
 var authServerHost = os.Getenv("AUTH_SERVER_HOST")
 var authServerPort = os.Getenv("AUTH_SERVER_PORT")
 var authClient pb.AuthServiceClient
-
-type PQRequest struct {
-	MessageId uint64 `json:"messageId" binding:"required"` //TODO:add custom odd validator
-	Nonce     string `json:"nonce" binding:"required,len=20"`
-}
-
-type DHRequest struct {
-	A         string         `json:"A" binding:"required,number"`
-	MessageId uint64         `json:"messageId" binding:"required"`
-	Nonces    CompleteNonces `json:"nonces" binding:"required"`
-}
-
-type CompleteNonces struct {
-	Nonce        string `json:"nonce" binding:"required,len=20"`
-	Nonce_server string `json:"nonceServer" binding:"required,len=20"`
-}
 
 func main() {
 	// Create a gRPC connection to the server
@@ -54,78 +36,9 @@ func main() {
 	engine.Run(":8080")
 }
 
-func PQhandler(c *gin.Context) {
-	//do field checks on the request body
-	body, err := fieldCheckPQBody(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	//send request to server
-	request := pb.PQRequest{MessageId: body.MessageId, Nonce: body.Nonce}
-	pqResponse, err := authClient.PqReq(context.Background(), &request)
-
-	//send the gRPC response back to the client
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, pqResponse)
-
-}
-
-func fieldCheckPQBody(c *gin.Context) (PQRequest, error) {
-	body := PQRequest{}
-	//do the checks specified by the struct tags of PQRequest
-	if err := c.ShouldBindJSON(&body); err != nil {
-		return PQRequest{}, err
-	}
-
-	//check message Id being odd
-	if err := checkMessageIdOddness(body.MessageId); err != nil {
-		return PQRequest{}, err
-	}
-	return body, nil
-}
-
 func checkMessageIdOddness(messageId uint64) error {
 	if messageId%2 != 1 {
 		return status.Errorf(codes.InvalidArgument, "messageId must be an odd number")
 	}
 	return nil
-}
-
-func DHhandler(c *gin.Context) {
-	//do field checks on the request body
-	body, err := fieldCheckDHBody(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	//send request to server
-	completeNonces := &pb.CompleteNonces{Nonce: body.Nonces.Nonce, NonceServer: body.Nonces.Nonce_server}
-	request := &pb.DHParamsRequest{MessageId: body.MessageId, Nonces: completeNonces, A: body.A}
-	dhResponse, err := authClient.Req_DHParams(context.Background(), request)
-
-	//send the gRPC response back to the client
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, dhResponse)
-
-}
-
-func fieldCheckDHBody(c *gin.Context) (DHRequest, error) {
-	body := DHRequest{}
-	//do the checks specified by the struct tags of PQRequest
-	if err := c.ShouldBindJSON(&body); err != nil {
-		return DHRequest{}, err
-	}
-
-	//check message Id being odd
-	if err := checkMessageIdOddness(body.MessageId); err != nil {
-		return DHRequest{}, err
-	}
-	return body, nil
 }
