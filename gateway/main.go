@@ -38,7 +38,7 @@ func main() {
 	// Apply IP block middleware to the /auth route
 	authGroup.Use(IPBlockMiddleware(rds))
 
-	authGroup.Use(RequestCountMiddleware(rds, 3))
+	authGroup.Use(RequestCountMiddleware(rds, 100))
 
 	authGroup.POST("/pq", PQhandler)
 	authGroup.POST("/dh", DHhandler)
