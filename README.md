@@ -47,5 +47,9 @@ protoc --go_out=./auth --go-grpc_out=./auth proto/auth.proto
 protoc --go_out=./gateway --go-grpc_out=./gateway proto/auth.proto
 ```
 and then use ```go tidy``` in both ./gateway and ./auth to get the dependencies
-
+and for locust u can use : 
+```bash
+python -m grpc_tools.protoc -I./proto --python_out=./locust/ --grpc_python_out=./locust
+ auth.proto
+```
 
