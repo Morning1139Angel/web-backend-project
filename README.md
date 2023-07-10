@@ -52,4 +52,9 @@ and for locust u can use :
 python -m grpc_tools.protoc -I./proto --python_out=./locust/ --grpc_python_out=./locust
  auth.proto
 ```
+##Locust
 
+you can use the following command to run locust locally to test gateway:
+```bash
+locust -f ./locust/locustfile.py 
+```
