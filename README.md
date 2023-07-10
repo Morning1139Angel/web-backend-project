@@ -6,6 +6,28 @@ docker network create --driver bridge project-network
 docker build -t gateway-server ./gateway
 docker build -t auth-server ./auth/
 ```
+##Redis
+run the folowing command for running redis and the redis monitor ... the redis monitor will be on port 8001 of local host
+the redis password is "SuperSecretSecureStrongPass"
+```bash
+docker run -d --rm --name redis -v `pwd`/config:/etc/redis/ redis:6.0-alpine redis-server /etc/redis/redis.conf
+docker network connect project-network redis --alias redis
+docker run -d --rm --name gateway_redis -v `pwd`/config:/etc/redis/ redis:6.0-alpine redis-server /etc/redis/redis.conf
+docker network connect project-network gateway_redis --alias gateway_redis
+docker run -p 8001:8001 -d --rm --network=project-network redislabs/redisinsight:latest
+```
+u can also use the redis CLI to view the expiration time... run this command on a new terminal first:
+```bash
+docker exec -it redis redis-cli -a "SuperSecretSecureStrongPass"
+```
+and then u can use ```TTL <key-name>``` inside the cli to see the expiration time
+
+##AUTH server
+for the auth server run the following commands:
+```bash
+docker run --network=project-network --network-alias=auth-server  -p 9000:9000 -d --name auth-server auth-server
+```
+
 ## Golang gateway server
 to start the gateway server run the following docker commands:
 ```bash
@@ -26,22 +48,4 @@ protoc --go_out=./gateway --go-grpc_out=./gateway proto/auth.proto
 ```
 and then use ```go tidy``` in both ./gateway and ./auth to get the dependencies
 
-##Redis
-run the folowing command for running redis and the redis monitor ... the redis monitor will be on port 8001 of local host
-the redis password is "SuperSecretSecureStrongPass"
-```bash
-docker run -d --rm --name redis -v `pwd`/config:/etc/redis/ redis:6.0-alpine redis-server /etc/redis/redis.conf
-docker network connect project-network redis --alias redis
-docker run -p 8001:8001 -d --rm --network=project-network redislabs/redisinsight:latest
-```
-u can also use the redis CLI to view the expiration time... run this command on a new terminal first:
-```bash
-docker exec -it redis redis-cli -a "SuperSecretSecureStrongPass"
-```
-and then u can use ```TTL <key-name>``` inside the cli to see the expiration time
 
-##AUTH server
-for the auth server run the following commands:
-```bash
-docker run --network=project-network --network-alias=auth-server  -p 9000:9000 -d --name auth-server auth-server
-```

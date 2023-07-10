@@ -31,8 +31,18 @@ func main() {
 
 	//start the gin server
 	engine := gin.New()
-	engine.POST("/auth/pq", PQhandler)
-	engine.POST("/auth/dh", DHhandler)
+	authGroup := engine.Group("/auth")
+
+	rds := InitRedicClient()
+
+	// Apply IP block middleware to the /auth route
+	authGroup.Use(IPBlockMiddleware(rds))
+
+	authGroup.Use(RequestCountMiddleware(rds, 3))
+
+	authGroup.POST("/pq", PQhandler)
+	authGroup.POST("/dh", DHhandler)
+
 	engine.Run(":8080")
 }
 

@@ -7,6 +7,10 @@ WORKDIR /app
 ENV AUTH_SERVER_HOST=auth-server
 ENV AUTH_SERVER_PORT=9000
 
+ENV REDIS_HOST=gateway_redis
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=SuperSecretSecureStrongPass
+
 # Copy the code into the container
 COPY . .
 
