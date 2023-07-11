@@ -13,6 +13,13 @@ type PQRequest struct {
 	Nonce     string `json:"nonce" binding:"required,len=20"`
 }
 
+// PQrequest             godoc
+// @Summary      p and g getter
+// @Description  returns the p and g numbers used in dh
+// @Produce      json
+// @Param        PQRequest  body      PQRequest  true  "PQRequest JSON"
+// @Success      200   {object}  pb.PQResponse
+// @Router       /auth/pq [post]
 func PQhandler(c *gin.Context) {
 	//do field checks on the request body
 	body, err := fieldCheckPQBody(c)

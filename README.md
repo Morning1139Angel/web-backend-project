@@ -58,3 +58,11 @@ you can use the following command to run locust locally to test gateway:
 ```bash
 locust -f ./locust/locustfile.py 
 ```
+
+##Swagger
+
+you can access here to see the swagger UI : 
+
+```bash
+http://localhost/docs/index.html
+```

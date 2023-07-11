@@ -19,6 +19,13 @@ type CompleteNonces struct {
 	Nonce_server string `json:"nonceServer" binding:"required,len=20"`
 }
 
+// DHrequest             godoc
+// @Summary      diffile hilman algo
+// @Description  Takes the client public key. Return server public key. and stores private key
+// @Produce      json
+// @Param        DHRequest  body      DHRequest  true  "DHRequest JSON"
+// @Success      200   {object}  pb.DHParamsResponse
+// @Router       /auth/dh [post]
 func DHhandler(c *gin.Context) {
 	//do field checks on the request body
 	body, err := fieldCheckDHBody(c)
