@@ -1,0 +1,113 @@
+definitions:
+  grpc.CompleteNonces:
+    properties:
+      nonce:
+        type: string
+      nonce_server:
+        type: string
+    type: object
+  grpc.DHParamsResponse:
+    properties:
+      B:
+        type: string
+      message_id:
+        type: integer
+      nonces:
+        $ref: '#/definitions/grpc.CompleteNonces'
+    type: object
+  grpc.PQResponse:
+    properties:
+      g:
+        type: string
+      message_id:
+        type: integer
+      nonces:
+        $ref: '#/definitions/grpc.CompleteNonces'
+      p:
+        type: string
+    type: object
+  main.CompleteNonces:
+    properties:
+      nonce:
+        type: string
+      nonceServer:
+        type: string
+    required:
+    - nonce
+    - nonceServer
+    type: object
+  main.DHRequest:
+    properties:
+      A:
+        type: string
+      messageId:
+        type: integer
+      nonces:
+        $ref: '#/definitions/main.CompleteNonces'
+    required:
+    - A
+    - messageId
+    - nonces
+    type: object
+  main.PQRequest:
+    properties:
+      messageId:
+        description: TODO:add custom odd validator
+        type: integer
+      nonce:
+        type: string
+    required:
+    - messageId
+    - nonce
+    type: object
+host: localhost:80
+info:
+  contact:
+    email: amirkhazama1139@gmail.com
+    name: amir khazama
+  description: A sample homework service API in Go using Gin framework.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://tos.santoshk.dev
+  title: Web Hw1
+  version: "1.0"
+paths:
+  /auth/dh:
+    post:
+      description: Takes the client public key. Return server public key. and stores
+        private key
+      parameters:
+      - description: DHRequest JSON
+        in: body
+        name: DHRequest
+        required: true
+        schema:
+          $ref: '#/definitions/main.DHRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/grpc.DHParamsResponse'
+      summary: diffile hilman algo
+  /auth/pq:
+    post:
+      description: returns the p and g numbers used in dh
+      parameters:
+      - description: PQRequest JSON
+        in: body
+        name: PQRequest
+        required: true
+        schema:
+          $ref: '#/definitions/main.PQRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/grpc.PQResponse'
+      summary: p and g getter
+swagger: "2.0"
