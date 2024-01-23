@@ -1,9 +1,9 @@
-overall look of the project components:<br />
+overall look of the project components (* beside these main components locust and swagger have also been added *):<br />
 
 ![Screenshot from 2024-01-23 20-55-51](https://github.com/Morning1139Angel/web-backend-project/assets/127003598/fcae876d-f313-45f5-b3e0-7c33d23b33d4)
 <br />
 further detials can be found in this document : [web_hw1_1402 _final.pdf](https://github.com/Morning1139Angel/web-backend-project/files/14027850/web_hw1_1402._final.pdf)
-<br />## <h2>Docker initial setup</h2>
+<br /><h2>Docker initial setup</h2>
 <br />
 create the network and build the images required
 ```bash
@@ -27,7 +27,7 @@ docker exec -it redis redis-cli -a "SuperSecretSecureStrongPass"
 ```
 and then u can use ```TTL <key-name>``` inside the cli to see the expiration time
 
-##AUTH server
+<h2>AUTH server</h2><br />
 for the auth server run the following commands:
 ```bash
 docker run --network=project-network --network-alias=auth-server  -p 9000:9000 -d --name auth-server auth-server
@@ -45,7 +45,7 @@ start the Nginx container and connect it to the network created
 docker run --name nginx --network=project-network -p 80:80 -v `pwd`/config/default.conf:/etc/nginx/conf.d/default.conf -d nginx
 ```
 
-##GRPC
+<h2>GRPC</h2>
 the folowing commands were used to generate the grpc boilerplate code 
 ```bash
 protoc --go_out=./auth --go-grpc_out=./auth proto/auth.proto
@@ -57,14 +57,14 @@ and for locust u can use :
 python -m grpc_tools.protoc -I./proto --python_out=./locust/ --grpc_python_out=./locust
  auth.proto
 ```
-##Locust
+<h2>Locust</h2>
 
 you can use the following command to run locust locally to test gateway:
 ```bash
 locust -f ./locust/locustfile.py 
 ```
 
-##Swagger
+<h2>Swagger</h2>
 
 you can access here to see the swagger UI : 
 
