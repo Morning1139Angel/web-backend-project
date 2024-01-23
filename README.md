@@ -1,4 +1,3 @@
-# web-hw1
 ## Docker initial setup
 create the network and build the images required
 ```bash
