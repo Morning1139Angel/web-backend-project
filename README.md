@@ -3,7 +3,7 @@ overall look of the project components:<br />
 ![Screenshot from 2024-01-23 20-55-51](https://github.com/Morning1139Angel/web-backend-project/assets/127003598/fcae876d-f313-45f5-b3e0-7c33d23b33d4)
 <br />
 further detials can be found in this document : [web_hw1_1402 _final.pdf](https://github.com/Morning1139Angel/web-backend-project/files/14027850/web_hw1_1402._final.pdf)
-<br />## Docker initial setup
+<br />## <h2>Docker initial setup</h2>
 <br />
 create the network and build the images required
 ```bash
@@ -11,7 +11,7 @@ docker network create --driver bridge project-network
 docker build -t gateway-server ./gateway
 docker build -t auth-server ./auth/
 ```
-##Redis
+<h2 >Redis</h2> <br />
 run the folowing command for running redis and the redis monitor ... the redis monitor will be on port 8001 of local host
 the redis password is "SuperSecretSecureStrongPass"
 ```bash
