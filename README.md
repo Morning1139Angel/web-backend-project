@@ -1,11 +1,9 @@
-## Docker initial setup
-overall look of the project components:
+![image](https://github.com/Morning1139Angel/web-backend-project/assets/127003598/7f2ee10c-23c2-42db-8fc5-fe85c69c88cc)## Docker initial setup
+overall look of the project components:<br />
 
 ![Screenshot from 2024-01-23 20-55-51](https://github.com/Morning1139Angel/web-backend-project/assets/127003598/fcae876d-f313-45f5-b3e0-7c33d23b33d4)
+<br />
 further detials can be found in this document : [web_hw1_1402 _final.pdf](https://github.com/Morning1139Angel/web-backend-project/files/14027850/web_hw1_1402._final.pdf)
-
-
-
 
 create the network and build the images required
 ```bash
