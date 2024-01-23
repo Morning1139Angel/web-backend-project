@@ -4,6 +4,7 @@ overall look of the project components:<br />
 <br />
 further detials can be found in this document : [web_hw1_1402 _final.pdf](https://github.com/Morning1139Angel/web-backend-project/files/14027850/web_hw1_1402._final.pdf)
 <br />## Docker initial setup
+<br />
 create the network and build the images required
 ```bash
 docker network create --driver bridge project-network
